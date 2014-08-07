@@ -15,6 +15,11 @@
  *= require foundation_and_overrides
  *= require select2
  */
+
+body {
+  overflow-y:hidden;
+}
+
 #placeholder-one {
   height: 50px;
   background-color:pink;
@@ -31,4 +36,14 @@
 
 #footer {
   text-align:center;
+  background-color:green;
+}
+
+#graph {
+  background-color:cyan;
+}
+
+#info {
+  height:50px;
+  background-color:brown;
 }
