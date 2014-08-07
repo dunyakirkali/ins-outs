@@ -19,4 +19,5 @@
 $(function(){ 
   $(document).foundation();
   $("#countries").select2({ width: 'resolve' });
+  $("#years").select2({ width: 'resolve' });
 });
