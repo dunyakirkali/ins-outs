@@ -16,6 +16,7 @@ gem "slim-rails"
 gem "devise"
 gem "foundation-rails"
 gem "select2-rails"
+gem "d3-rails"
 group :development, :test do
   gem "rspec-rails"
   gem "faker"
