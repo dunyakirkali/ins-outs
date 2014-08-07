@@ -79,7 +79,7 @@ $(function(){
         .text(function(d) { return d.data.age; });
   }
   
-  d3.csv("assets/data.csv", function(error, data) {
+  d3.csv("<%= asset_path('data.csv') %>", function(error, data) {
     country_data = data;
     draw();
   });
