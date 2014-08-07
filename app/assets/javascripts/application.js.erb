@@ -42,41 +42,70 @@ $(function(){
   var width = $('#options').innerWidth() - 30;
   var height = $('body').height() - ($('#options').position().top + $('#options').height()) - 30;
   var radius = Math.min(width, height) / 2;
-  var negative_colors = d3.scale.ordinal().range(["#993F29", "#592518", "#D9593A", "#E65E3D", "#BF4F33"]);
-  var positive_colors = d3.scale.ordinal().range(["#294D32", "#72D98E", "#4A8D5C", "#519A64", "#3D734B"]);
-  var country_data = null;
-  
-  function draw() {
-    var svg = d3.select("#graph .columns")
-        .append("svg").data([country_data])
-          .attr("width", width)
+  var pos_data = null, neg_data = null;
+  var svg = d3.select("#graph .columns").append("svg").attr("width", width)
           .attr("height", height)
         .append("g")
           .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+          
+  function drawOutcome() {
+    var negative_color = d3.rgb("#20BCF0");
+    var negs = svg.append('g').data([neg_data]);
 
     var arc = d3.svg.arc()
         .outerRadius(radius - 10)
-        .innerRadius(0);
+        .innerRadius(radius / 2);
 
-    var in_pie = d3.layout.pie()
-            .value(function(d) { return d.population; })
-            .startAngle(-180 * (Math.PI/180))
-            .endAngle(0 * (Math.PI/180));
     var out_pie = d3.layout.pie()
-            .value(function(d) { return d.population; })
+            .value(function(d) { return d.value; })
             .startAngle(0 * (Math.PI/180))
             .endAngle(180 * (Math.PI/180));
-    var pos_arcs = svg.selectAll("g.pos_slice")
+
+    var neg_arcs = negs.selectAll("g.neg_slice")
+            .data(out_pie)
+            .enter()
+                .append("g")
+                  .attr("transform", "translate(" + 50 + "," + 0 + ")")
+                  .attr("class", "neg_slice");
+    neg_arcs.append("path")
+            .attr("fill", function(d, i) { return negative_color; })
+            .attr("d", arc);
+    neg_arcs.append("text")
+            .attr("transform", function(d) {
+                return "translate(" + arc.centroid(d) + ")";
+            })
+            .attr("text-anchor", "middle")
+            .text(function(d, i) { return d.data.title; });
+  }
+  
+  function drawIncome() {
+    var positive_color = d3.rgb("#FED431");
+    var poz = svg.append('g').data([pos_data]);
+    
+    var arc = d3.svg.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(radius / 2);
+    var exp_arc = d3.svg.arc()
+        .outerRadius(radius+100)
+        .innerRadius((radius / 2)+100);
+
+    var in_pie = d3.layout.pie()
+            .value(function(d) { return d.value; })
+            .startAngle(-180 * (Math.PI/180))
+            .endAngle(0 * (Math.PI/180));
+
+    var pos_arcs = poz.selectAll("g.pos_slice")
             .data(in_pie)
             .enter()
                 .append("g")
-                    .attr("class", "pos_slice");
+                  .attr("transform", "translate(" + -50 + "," + 0 + ")")
+                  .attr("class", "pos_slice");
     pos_arcs.append("path")
             .attr("fill", function(d, i) { 
-              if(i == 6) {
-                return '#fff';
+              if(i == 0) {
+                return '#f00';
               } else {
-                return positive_colors(i);
+                return positive_color;
               }
             })
             .attr("d", arc);
@@ -85,26 +114,16 @@ $(function(){
                 return "translate(" + arc.centroid(d) + ")";
             })
             .attr("text-anchor", "middle")
-            .text(function(d, i) { return d.age; });
-
-    var neg_arcs = svg.selectAll("g.neg_slice")
-            .data(out_pie)
-            .enter()
-                .append("g")
-                    .attr("class", "neg_slice");
-    neg_arcs.append("path")
-            .attr("fill", function(d, i) { return negative_colors(i); })
-            .attr("d", arc);
-    neg_arcs.append("text")
-            .attr("transform", function(d) {
-                return "translate(" + arc.centroid(d) + ")";
-            })
-            .attr("text-anchor", "middle")
-            .text(function(d, i) { return d.age; });
+            .text(function(d, i) { return d.data.title; });
   }
 
-  d3.csv("<%= asset_path('data.csv') %>", function(error, data) {
-    country_data = data;
-    draw();
+  d3.csv("<%= asset_path('outcome.csv') %>", function(error, data) {
+    neg_data = data;
+    drawOutcome();
+  });
+  
+  d3.csv("<%= asset_path('income.csv') %>", function(error, data) {
+    pos_data = data;
+    drawIncome();
   });
 });
