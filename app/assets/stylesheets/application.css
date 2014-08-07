@@ -15,3 +15,16 @@
  *= require foundation_and_overrides
 
  */
+#placeholder-one {
+  height: 50px;
+  background-color:pink;
+}
+
+#title {
+  text-align:center;
+  background-color:red;
+}
+
+#options {
+  background-color:blue;
+}
