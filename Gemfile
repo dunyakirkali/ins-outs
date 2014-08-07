@@ -18,6 +18,7 @@ gem "foundation-rails"
 gem "select2-rails"
 gem "d3-rails"
 gem 'rails_12factor'
+gem 'carmen-rails', '~> 1.0.0'
 group :development, :test do
   gem "rspec-rails"
   gem "faker"
