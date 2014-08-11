@@ -56,7 +56,7 @@ $(function(){
         .outerRadius(radius - 10)
         .innerRadius(radius / 2);
 
-    var out_pie = d3.layout.pie()
+    var out_pie = d3.layout.pie().sort(null)
             .value(function(d) { return d.value; })
             .startAngle(0 * (Math.PI/180))
             .endAngle(180 * (Math.PI/180));
@@ -65,7 +65,7 @@ $(function(){
             .data(out_pie)
             .enter()
                 .append("g")
-                  .attr("transform", "translate(" + 50 + "," + 0 + ")")
+                  .attr("transform", "translate(" + 20 + "," + 0 + ")")
                   .attr("class", "neg_slice");
     neg_arcs.append("path")
             .attr("fill", function(d, i) { return negative_color; })
@@ -75,7 +75,7 @@ $(function(){
                 return "translate(" + arc.centroid(d) + ")";
             })
             .attr("text-anchor", "middle")
-            .text(function(d, i) { return d.data.title; });
+            .text(function(d, i) { return d.data.value; });
   }
   
   function drawIncome() {
@@ -89,16 +89,16 @@ $(function(){
         .outerRadius(radius+100)
         .innerRadius((radius / 2)+100);
 
-    var in_pie = d3.layout.pie()
+    var in_pie = d3.layout.pie().sort(null)
             .value(function(d) { return d.value; })
-            .startAngle(-180 * (Math.PI/180))
-            .endAngle(0 * (Math.PI/180));
+            .startAngle(0 * (Math.PI/180))
+            .endAngle(-180 * (Math.PI/180));
 
     var pos_arcs = poz.selectAll("g.pos_slice")
             .data(in_pie)
             .enter()
                 .append("g")
-                  .attr("transform", "translate(" + -50 + "," + 0 + ")")
+                  .attr("transform", "translate(" + -20 + "," + 0 + ")")
                   .attr("class", "pos_slice");
     pos_arcs.append("path")
             .attr("fill", function(d, i) { 
@@ -114,7 +114,7 @@ $(function(){
                 return "translate(" + arc.centroid(d) + ")";
             })
             .attr("text-anchor", "middle")
-            .text(function(d, i) { return d.data.title; });
+            .text(function(d, i) { return d.data.value; });
   }
 
   d3.csv("<%= asset_path('outcome.csv') %>", function(error, data) {
